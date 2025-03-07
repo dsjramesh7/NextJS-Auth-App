@@ -12,6 +12,7 @@ const CommonFormElement = ({ currentFormItem, value, onChange }) => {
           placeholder={currentFormItem.placeholder}
           value={value}
           onChange={onChange}
+          type={currentFormItem.type}
         />
       );
       break;
@@ -24,6 +25,7 @@ const CommonFormElement = ({ currentFormItem, value, onChange }) => {
           placeholder={currentFormItem.placeholder}
           value={value}
           onChange={onChange}
+          type={currentFormItem.type}
         />
       );
       break;
