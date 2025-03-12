@@ -41,7 +41,7 @@ const SignUpPage = () => {
           {userRegistrationFormControls &&
           userRegistrationFormControls.length > 0 ? (
             userRegistrationFormControls.map((formItem) => (
-              <div key={formItem.name} className="space-y-2">
+              <div key={formItem.name} className="space-y-2 text-black">
                 <Label className="text-gray-700 font-medium">
                   {formItem.label}
                 </Label>
