@@ -1,5 +1,5 @@
 import connectToDB from "@/database";
-import User from "@/models";
+import User from "@/models/index";
 
 // Create User Actions(Registration of user)
 export const registerUserAction = async (formData) => {
@@ -13,10 +13,8 @@ export const registerUserAction = async (formData) => {
         message: "User Already Present! Try with differen Email",
       };
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const newlyCreatedUser = new User({
       userName,
       email,
@@ -37,9 +35,10 @@ export const registerUserAction = async (formData) => {
       };
     }
   } catch (error) {
+    console.error("Error in registerUserAction:", error); // Log full error
     return {
       success: false,
-      message: "Something went wrong! Try again later",
+      message: error.message || "Something went wrong! Try again later",
     };
   }
 };
