@@ -2,6 +2,8 @@
 import connectToDB from "@/database";
 import User from "@/models";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 // Create User Actions(Registration of user)
 export const registerUserAction = async (formData) => {
@@ -41,6 +43,55 @@ export const registerUserAction = async (formData) => {
     return {
       success: false,
       message: error.message || "Something went wrong! Try again later",
+    };
+  }
+};
+
+//Login User Action
+export const loginUserAction = async (formData) => {
+  await connectToDB();
+  try {
+    const { email, password } = formData;
+
+    // checking if user email is present or not
+    const checkUser = await User.findOne({ email });
+    if (!checkUser) {
+      return {
+        success: false,
+        messasge: "User Does not exist! Sign Up Now",
+      };
+    }
+
+    //checking if password is valid or not
+    const checkPassword = await bcryptjs.compare(password, checkUser.password);
+    if (!checkPassword) {
+      return {
+        success: false,
+        message: "Password is incorrect check the password",
+      };
+    }
+
+    //need to create token data
+    const createdTokenData = {
+      id: checkUser._id,
+      userName: checkUser.userName,
+      email: checkUser.email,
+    };
+
+    const token = jwt.sign(createdTokenData, "DEFAULT_KEY", {
+      expiresIn: "1d",
+    });
+    const getCookies = cookies();
+    getCookies.set("token", token);
+    return {
+      success: true,
+      message: "Login is Successful",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "something went wrong",
     };
   }
 };
