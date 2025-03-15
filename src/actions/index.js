@@ -95,3 +95,38 @@ export const loginUserAction = async (formData) => {
     };
   }
 };
+
+//for fetching the user action
+export const fetchAuthUserAction = async () => {
+  await connectToDB();
+  try {
+    const getCookies = cookies();
+    const token = (await getCookies.get("token")?.value) || "";
+    if (token === "") {
+      return {
+        success: false,
+        message: "Token is invalid",
+      };
+    }
+    const decodedToken = jwt.verify(token, "DEFAULT_KEY");
+    const getUserInfo = await User.findOne({ _id: decodedToken.id });
+
+    if (getUserInfo) {
+      return {
+        success: true,
+        data: JSON.parse(JSON.stringify(getUserInfo)),
+      };
+    } else {
+      return {
+        success: false,
+        message: "Something went wrong while retriving user data",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "Something went wrong try again later",
+    };
+  }
+};
